@@ -5,14 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskTitleInput = document.getElementById('task-title');
     const taskPrioritySelect = document.getElementById('task-priority');
     const pendingColumn = document.querySelector('.kanban-cards[data-column-id="1"]');
-    const managerPassword = "gerente"; // Substitua pela senha real do gerente
+    const managerPassword = "gerente";
     let draggedCard = null;
 
+    // Função para buscar uma imagem aleatória da API Random User
+    async function fetchRandomUserImage() {
+        try {
+            const response = await fetch('https://randomuser.me/api/');
+            const data = await response.json();
+            return data.results[0].picture.large; // Retorna a URL da foto grande
+        } catch (error) {
+            console.error('Erro ao buscar imagem da API:', error);
+            return './img/smile-2072907_640.jpg'; // Retorna uma imagem padrão em caso de erro
+        }
+    }
+
     // Função para criar um novo card HTML
-    function createNewCard(title, priority) {
+    async function createNewCard(title, priority) {
         const card = document.createElement('div');
         card.classList.add('kanban-card');
-        card.setAttribute('draggable', false); // Inicialmente não arrastável
+        card.setAttribute('draggable', false);
 
         const badge = document.createElement('div');
         badge.classList.add('badge', priority);
@@ -24,22 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cardInfos = document.createElement('div');
         cardInfos.classList.add('card-infos');
+        const randomImageURL = await fetchRandomUserImage(); // Busca a URL da imagem
         cardInfos.innerHTML = `
             <div class="card-icons">
                 <p><i class="fa-regular fa-comment"></i> 0</p>
                 <p><i class="fa-solid fa-paperclip"></i> 0</p>
             </div>
             <div class="user">
-                <img src="./img/smile-2072907_640.jpg" alt="User">
+                <img src="${randomImageURL}" alt="User">
             </div>
         `;
 
-        // Adicionando o botão de exclusão
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-card-btn');
         deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
 
-        // Adicionando o botão de aprovar
         const approveButton = document.createElement('button');
         approveButton.classList.add('approve-card-btn');
         approveButton.textContent = 'Aprovar';
@@ -50,26 +61,24 @@ document.addEventListener('DOMContentLoaded', () => {
         card.appendChild(deleteButton);
         card.appendChild(approveButton);
 
-        // Event listener para o botão de aprovar
         approveButton.addEventListener('click', (e) => {
             const enteredPassword = prompt("Digite a senha do gerente para aprovar esta tarefa:");
             if (enteredPassword === managerPassword) {
                 card.classList.add('approved');
-                card.setAttribute('draggable', true); // Tornar arrastável após aprovação
-                approveButton.remove(); // Remover o botão de aprovar após clicar
+                card.setAttribute('draggable', true);
+                approveButton.remove();
                 e.stopPropagation();
             } else if (enteredPassword !== null) {
                 alert("Senha incorreta. A tarefa não foi aprovada.");
             }
         });
 
-        // Adiciona os event listeners de drag ao novo card (será ativado após aprovação)
         card.addEventListener('dragstart', (e) => {
             if (card.classList.contains('approved')) {
                 draggedCard = e.target;
                 e.target.classList.add('dragging');
             } else {
-                e.preventDefault(); // Impede o drag se não estiver aprovado
+                e.preventDefault();
             }
         });
 
@@ -80,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Adiciona o event listener para o botão de exclusão
         deleteButton.addEventListener('click', (e) => {
             const cardToDelete = e.target.closest('.kanban-card');
             if (cardToDelete) {
@@ -92,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return card;
     }
 
-    // Adiciona o botão de aprovar e exclusão aos cards existentes na coluna pendente
-    pendingColumn.querySelectorAll('.kanban-card').forEach(card => {
+    // Adiciona o botão de aprovar e exclusão aos cards existentes na coluna pendente (agora também busca imagem)
+    pendingColumn.querySelectorAll('.kanban-card').forEach(async card => {
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-card-btn');
         deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
@@ -103,6 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
         approveButton.classList.add('approve-card-btn');
         approveButton.textContent = 'Aprovar';
         card.appendChild(approveButton);
+
+        const userDiv = card.querySelector('.user');
+        if (userDiv && userDiv.querySelector('img')) {
+            const randomImageURL = await fetchRandomUserImage();
+            userDiv.querySelector('img').src = randomImageURL;
+        }
 
         approveButton.addEventListener('click', (e) => {
             const enteredPassword = prompt("Digite a senha do gerente para aprovar esta tarefa:");
@@ -124,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
         });
 
-        // Inicialmente, cards existentes na pendente não são arrastáveis até serem aprovados
         card.setAttribute('draggable', false);
         card.addEventListener('dragstart', (e) => {
             if (card.classList.contains('approved')) {
@@ -144,15 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener para o botão de criar tarefa
     if (createTaskBtn) {
-        createTaskBtn.addEventListener('click', () => {
+        createTaskBtn.addEventListener('click', async () => { // Adiciona 'async' aqui
             const title = taskTitleInput.value.trim();
             const priority = taskPrioritySelect.value;
 
             if (title) {
-                const newCard = createNewCard(title, priority);
+                const newCard = await createNewCard(title, priority); // Adiciona 'await' aqui
                 pendingColumn.appendChild(newCard);
 
-                // Limpa o formulário após a criação
                 taskTitleInput.value = '';
                 taskPrioritySelect.value = 'high';
             } else {
