@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (card.classList.contains('approved')) {
                 draggedCard = e.target;
                 e.target.classList.add('dragging');
+                console.log('Drag start:', draggedCard); // LOG
             } else {
                 e.preventDefault();
             }
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('dragend', () => {
             if (draggedCard) {
                 draggedCard.classList.remove('dragging');
+                console.log('Drag end:', draggedCard); // LOG
                 draggedCard = null;
             }
         });
@@ -143,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (card.classList.contains('approved')) {
                 draggedCard = e.target;
                 e.target.classList.add('dragging');
+                console.log('Drag start (existing card):', draggedCard); // LOG
             } else {
                 e.preventDefault();
             }
@@ -150,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('dragend', () => {
             if (draggedCard) {
                 draggedCard.classList.remove('dragging');
+                console.log('Drag end (existing card):', draggedCard); // LOG
                 draggedCard = null;
             }
         });
@@ -157,12 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener para o botão de criar tarefa
     if (createTaskBtn) {
-        createTaskBtn.addEventListener('click', async () => { // Adiciona 'async' aqui
+        createTaskBtn.addEventListener('click', async () => {
             const title = taskTitleInput.value.trim();
             const priority = taskPrioritySelect.value;
 
             if (title) {
-                const newCard = await createNewCard(title, priority); // Adiciona 'await' aqui
+                const newCard = await createNewCard(title, priority);
                 pendingColumn.appendChild(newCard);
 
                 taskTitleInput.value = '';
@@ -179,19 +183,24 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (!e.currentTarget.classList.contains('cards-hover')) {
                 e.currentTarget.classList.add('cards-hover');
+                console.log('Drag over column:', e.currentTarget); // LOG
             }
         });
 
         column.addEventListener('dragleave', (e) => {
             e.preventDefault();
             e.currentTarget.classList.remove('cards-hover');
+            console.log('Drag leave column:', e.currentTarget); // LOG
         });
 
         column.addEventListener('drop', (e) => {
             e.preventDefault();
             e.currentTarget.classList.remove('cards-hover');
+            console.log('Drop on column:', e.currentTarget); // LOG
+            console.log('Dropped card:', draggedCard); // LOG
             if (draggedCard && draggedCard.classList.contains('approved')) {
                 column.appendChild(draggedCard);
+                console.log('Card appended to column:', e.currentTarget); // LOG
             }
         });
     });
