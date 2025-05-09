@@ -5,33 +5,35 @@
     box-sizing: border-box;
 }
 
-body{
-    min-height: 100vh;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9fafb; /* Fundo claro */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    background: linear-gradient(90deg, #a5b4fc, #93c5fd);
+    justify-content: flex-start;
+    min-height: 100vh;
 }
 
-.Kanban{
+/* Estilo para o container principal */
+.Kanban {
     display: flex;
-    gap: 14px;
-    padding: 24px;
-    width: 100%;
-    height: 90vh;
-    overflow-x: auto;
+    flex-wrap: wrap; /* Permite que as colunas se ajustem em telas menores */
+    gap: 20px;
+    justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
 }
 
 .kanban-column{
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    height: 100%;
-    overflow-y: auto;
-    background-color: #f6f8fc;
-    border-radius: 12px;
-    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-    padding: 12px;
+    flex: 1 1 300px; /* Ajusta a largura mínima e máxima das colunas */
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
     overflow: hidden;
     position: relative;
     min-width: 252px;
@@ -283,5 +285,107 @@ body{
     border-radius: 14px;
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.1);
     cursor: grab; /* Mudando o cursor para indicar que é arrastável */
+}
+
+/* Estilo para os ícones de comentários e anexos */
+.card-icons p {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer; /* Adiciona o cursor pointer */
+    transition: transform 0.2s ease, color 0.2s ease; /* Suaviza o hover */
+}
+
+.card-icons p:hover {
+    transform: scale(1.1); /* Aumenta levemente o tamanho no hover */
+    color: #2563eb; /* Muda a cor para azul no hover */
+}
+
+.card-icons p i {
+    font-size: 16px; /* Ajusta o tamanho do ícone */
+}
+
+/* Estilo para campos com erro */
+.input-error {
+    border: 2px solid #dc2626; /* Vermelho */
+    background-color: #fee2e2; /* Fundo vermelho claro */
+}
+
+/* Estilo para mensagens de erro */
+.error-message {
+    color: #dc2626; /* Vermelho */
+    font-size: 14px;
+    margin-top: 5px;
+    display: none; /* Oculta por padrão */
+}
+
+/* Estilo para o botão de fluxo */
+.process-flow-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background-color: #4caf50; /* Verde */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.process-flow-btn:hover {
+    background-color: #388e3c; /* Verde mais escuro */
+    transform: translateY(-2px); /* Eleva o botão no hover */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.process-flow-btn:active {
+    transform: translateY(0); /* Remove a elevação ao clicar */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o botão de fluxo de tarefas */
+.task-flow-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background-color: #2196f3; /* Azul */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-flow-btn:hover {
+    background-color: #1976d2; /* Azul mais escuro */
+    transform: translateY(-2px); /* Eleva o botão no hover */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task-flow-btn:active {
+    transform: translateY(0); /* Remove a elevação ao clicar */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .Kanban {
+        flex-direction: column; /* Empilha as colunas verticalmente */
+        gap: 15px;
+    }
+
+    .kanban-column {
+        flex: 1 1 100%; /* Ocupa toda a largura em telas menores */
+    }
+
+    .process-flow-btn {
+        width: 90%; /* Botão ocupa quase toda a largura */
+    }
 }
 
